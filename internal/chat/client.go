@@ -8,6 +8,7 @@ import (
 	"io"
 	"log"
 	"os"
+	"strings"
 )
 
 // - loads the server’s certificate and returns a TLS config with RootCAs
@@ -39,18 +40,22 @@ func listenForMessages(conn *tls.Conn) {
 	}
 }
 
-// - handles reading user input and sending it to the server
+// - handles user input and sending it to the server
 func sendMessages(conn *tls.Conn) {
 	stdin := bufio.NewScanner(os.Stdin)
+
+	reader := bufio.NewReader(os.Stdin)
+	username, _ := reader.ReadString('\n')
+	fmt.Fprintln(conn, username)
+	username = strings.TrimSpace(username)
+
+	fmt.Printf("Welcome, %s! Begin typing to send secure messages:\n", username)
+
 	for stdin.Scan() {
 		text := stdin.Text()
 		if _, err := fmt.Fprintln(conn, text); err != nil {
 			log.Println("write error:", err)
 		}
-	}
-
-	if err := stdin.Err(); err != nil {
-		log.Println("stdin error:", err)
 	}
 }
 
@@ -62,6 +67,7 @@ func ConnectClient(certPath, port string) {
 	if err != nil {
 		log.Fatalf("client dial error: %v", err)
 	}
+	log.Println("Connected to secure chat.")
 	defer conn.Close()
 
 	go listenForMessages(conn)

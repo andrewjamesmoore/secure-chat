@@ -104,9 +104,8 @@ func RunServer(certPath, keyPath string, port string) {
 	if err != nil {
 		log.Fatalf("failed to listen %v", err)
 	}
+	log.Printf("Server listening on port%s", port)
 	defer ln.Close()
-
-	log.Printf("Server listening on port %s", port)
 
 	for {
 		conn, err := ln.Accept()
