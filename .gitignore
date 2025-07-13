@@ -1,0 +1,22 @@
+# Go build output
+*.exe
+*.test
+*.out
+
+# Built binaries
+/bin/
+build/
+dist/
+
+# Certs
+certs/*.pem
+certs/*.key
+certs/openssl.cnf
+
+# Docker artifacts
+*.env
+docker-compose.override.yml
+
+# Editor settings
+.vscode/
+.DS_Store
