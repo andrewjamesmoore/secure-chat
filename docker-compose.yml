@@ -1,0 +1,11 @@
+services:
+  chat-server:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: secure-chat-server
+    ports:
+      - "8443:8443"
+    volumes:
+      - ./certs:/app/certs
+    restart: unless-stopped
