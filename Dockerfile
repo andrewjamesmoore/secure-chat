@@ -3,6 +3,7 @@ FROM golang:1.24.5 AS builder
 WORKDIR /app
 
 COPY go.mod ./
+COPY go.sum ./
 COPY . ./
 
 RUN go build -o server ./cmd/server

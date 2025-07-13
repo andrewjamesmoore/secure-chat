@@ -60,16 +60,26 @@ func sendMessages(conn *tls.Conn) {
 }
 
 // - connects to the server and starts listening
-func ConnectClient(certPath, port string) {
+func ConnectClient(certPath string) {
 	config := loadClientTLSConfig(certPath)
 
-	conn, err := tls.Dial("tcp", "localhost"+port, config)
+	host := os.Getenv("EC2_PUBLIC_IP")
+	port := os.Getenv("PORT")
+
+	if host == "" || port == "" {
+		log.Fatal("Missing EC2_PUBLIC_IP or PORT in environment")
+	}
+
+	address := fmt.Sprintf("%s:%s", host, port)
+	log.Println("Connecting to:", address)
+
+	conn, err := tls.Dial("tcp", address, config)
 	if err != nil {
 		log.Fatalf("client dial error: %v", err)
 	}
-	log.Println("Connected to secure chat.")
 	defer conn.Close()
 
+	log.Println("Connected to secure chat.")
 	go listenForMessages(conn)
 	sendMessages(conn)
 }
